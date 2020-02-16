@@ -10,7 +10,9 @@ The package name replaces the '_' with a 'u' to conform with PEP8 standards.
 Installation
 ============
 
-pip install umsg
+.. code:: bash
+
+  pip install umsg
 
 
 Usage
@@ -21,12 +23,12 @@ Class Logging Made Easy
 
 .. code:: python
 
-   from umsg import LoggingMixin
+  from umsg import LoggingMixin
 
-   class MyClass(LoggingMixin):
-       def __init__(self):
-           super().__init__(prefix='MyClass')
-           self.log('Logging initiated', level='debug')
+  class MyClass(LoggingMixin):
+      def __init__(self):
+          super().__init__(prefix='MyClass')
+          self.log('Logging initiated', level='debug')
 
 
 Programmatic log message levels
@@ -47,4 +49,4 @@ Programmatic log message levels
 Documentation
 =============
 
-Detailed documentation is available `here <https://rastern.github.io/umsg>`_.
+Detailed documentation is available `here <https://umsg.readthedocs.io/en/latest/>`_.
