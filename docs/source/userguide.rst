@@ -18,7 +18,7 @@ module member functions, or as a mixin to add logging class member methods.
 Module Level
 ------------
 In its simplest form, *umsg* can be invoked directly without pre-initialization
-in the same matter that the standard logging facilities can.
+in the same manner that the standard logging facilities can.
 
 .. code-block:: python
 
@@ -184,18 +184,20 @@ the handler logs directly to the root logger.
 The approach taken by *umsg* is slightly different. It too supports a zero config
 option inspired by :py:mod:`logging`, and will initialize a logging handler with
 a default configuration by simply calling the logging method. Where *umsg*
-diverges is in what it instantiates, and where. Instead of initializing a :py:class:`~logging.StreamHandler`
-handler, *umsg* defaults to the more library appropriate :py:class:`~logging.NullHandler`,
+diverges is in what it instantiates, and where. Instead of initializing a :py:class:`~logging.StreamHandler`,
+*umsg* defaults to the more library appropriate :py:class:`~logging.NullHandler`,
 and initializes it on the *module* itself, not the root logger. Doing so is
 important for several reasons. This is in point of fact a `recommended behavior <https://docs.python.org/3/howto/logging.html#configuring-logging-for-a-library>`_
 for library logging, which honors the idea that "the configuration of handlers
-is the prerogative of the application developer who uses your library"[#quote1]_.
+is the prerogative of the application developer who uses your library" [#quote1]_.
 Using the :py:class:`~logging.NullHandler` ensures we're not emitting logs the developer
-may not want, need, or even be aware of.
+may not want, need, or even be aware of. It also honors the `Zen of Python <https://www.python.org/dev/peps/pep-0020/>`_
+aphorism that explicit is better than implicit, by requiring the developer to
+be explicit about their logging.
 
 By using the module level logger, we further isolate the library, or module,
 logging from unintentionally mucking up the consuming application's logs.
-Logging should be intentional, and explicit. Blindly logging to the root logger
+Logging should be intentional by design. Blindly logging to the root logger
 negates this. Lastly, *umsg* defaults to the :py:const:`logging.INFO` level. This
 is for two reasons. First, libraries don't usually emit a lot of general messages,
 and by isolating to the module, the developer is already required to deliberately
@@ -205,7 +207,19 @@ desires general information messages by default. If the application so requires,
 :py:const:`logging.DEBUG` can be easily enabled, though we shouldn't assume this
 is required by default for all applications.
 
+Enabling the :py:class:`~logging.StreamHandler`, if desired, is trivial:
 
+.. code-block:: python
+
+  import logging
+  import umsg
+
+  umsg.get_attr('logger').setHandler(logging.StreamHandler())
+  umsg.log('Hello World')
+
+Unlike the :py:func:`~logging.basicConfig` defaults, which are set at the :py:const:`logging.WARNING`
+level, this log message will immediately be displayed at the *umsg* default level
+of :py:const:`logging.INFO`.
 
 
 .. [#quote1] See https://docs.python.org/3/howto/logging.html

@@ -31,22 +31,19 @@ Class Logging Made Easy
           self.log('Logging initiated', level='debug')
 
 
-Programmatic log message levels
--------------------------------
+Basic Module / Script Logging Too
+---------------------------------
 
 .. code:: python
 
-  from umsg import log
+  import logging
+  import umsg
 
-  msg_level = 'debug'
-  log('Default level is INFO')
-  log('This message is DEBUG', level=msg_level)
-
-  log_level = 'warn'
-  log('Warnings are now in style', level=msg_level)
+  umsg.get_attr('logger').setHandler(logging.StreamHandler())
+  umsg.log('Good here')
 
 
 Documentation
 =============
 
-Detailed documentation is available `here <https://umsg.readthedocs.io/en/latest/>`_.
+Detailed documentation is available on `readthedocs <https://umsg.readthedocs.io/en/latest/>`_.
