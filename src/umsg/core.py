@@ -180,7 +180,7 @@ def log(msg, level=None, prefix=None, logger=None, exc_info=False,
         This function is an alias for :py:func:`_msg` in order to provide a PEP8
         compliant name.
     """
-    _msg(msg=masg, level=level, prefix=prefix, logger=logger, exc_info=exc_info,
+    _msg(msg=msg, level=level, prefix=prefix, logger=logger, exc_info=exc_info,
          stack_info=stack_info, extra=extra, end=end)
 
 
