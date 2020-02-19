@@ -15,6 +15,7 @@ profile_keys = [
     'logger',
     'logger_name',
     'level',
+    'formatter',
     'date_format',
     'msg_format',
     'msg_prefix',
@@ -33,6 +34,9 @@ DEFAULT_LOGGER_NAME = None
 
 DEFAULT_LEVEL = logging.INFO
 """int: Default logging level to set the logger to."""
+
+DEFAULT_FORMATTER = None
+""":py:class:`logging.formatter`: Default logging formatter to apply to new handlers."""
 
 DEFAULT_DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 """str: Default logging date format."""
@@ -121,6 +125,25 @@ def set_attr(name, value):
     setattr(this.__profiles[module], name, value)
 
 
+def add_handler(handler, **kwargs):
+    """Adds a new handler to the module / package logger.
+
+    Adds the given handler, with the specified keyword arguments, to the logger,
+    using the default formatter.
+
+    handler (:py:class:`~logging.handler`): Handler to add.
+    **kwargs (dict, optional): Dictionary of keyword arguments to the handler.
+    """
+    module = _init_profile()
+
+    _handler = handler(**kwargs)
+    _handler.setLevel(get_attr('level'))
+    _handler.setFormatter(get_attr('formatter'))
+
+    get_attr('logger').addHandler(_handler)
+
+
+
 def init(**kwargs):
     """Initialize logging based on module profile.
 
@@ -162,12 +185,14 @@ def init(**kwargs):
     for k, v in kwargs.items():
         set_attr(k, v)
 
+    formatter = logging.Formatter(get_attr('msg_format'), get_attr('date_format'))
     logger = logging.getLogger(get_attr('logger_name'))
-    logger.addHandler(logging.NullHandler())
     logger.setLevel(get_attr('level'))
+    logger.addHandler(logging.NullHandler())
     logger.propagate = get_attr('propagate')
 
     set_attr('logger', logger)
+    set_attr('formatter', formatter)
 
     return logger
 
