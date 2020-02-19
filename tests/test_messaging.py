@@ -4,7 +4,9 @@
 #  - make sure you propagate, or caplog won't see messages!
 #  - we need to set logging to the lowest, DEBUG, or we can't test debug msgs
 #
+import datetime
 import logging
+import re
 
 from pyassert import *
 import pytest
@@ -62,7 +64,7 @@ class TestMessaging:
         assert_that(caplog.record_tuples[0][1]).is_equal_to(logginglevel)
         assert_that(caplog.record_tuples[0][2]).is_equal_to(msg)
 
-    @pytest.mark.dependency(name='default', depends=['setup'])
+    @pytest.mark.dependency(depends=['setup'])
     def test_prefix_setting(self, caplog):
         prefix = 'default'
         msg = 'text'
@@ -73,7 +75,7 @@ class TestMessaging:
 
         assert_that(caplog.record_tuples[0][2]).is_equal_to(expected)
 
-    @pytest.mark.dependency(name='default', depends=['setup'])
+    @pytest.mark.dependency(depends=['setup'])
     def test_prefix_inline(self, caplog):
         prefix = 'default'
         msg = 'txt'
@@ -94,7 +96,20 @@ class TestMessaging:
 
         assert_that(caplog.record_tuples[0][2]).is_equal_to(expected)
 
-    @pytest.mark.dependency(name='default', depends=['setup'])
+    @pytest.mark.dependency(depends=['default'])
+    def test_formatter(self, capsys):
+        prefix = 'fmt'
+        msg = 'stream it'
+        umsg.add_handler(logging.StreamHandler)
+        umsg.log(msg, prefix=prefix)
+        date = datetime.date.today().strftime('%Y-%m-%d')
+
+        expected = '{} ([\\d]{{2}}:?){{3}} - INFO - <{}> {}'.format(date, prefix, msg)
+        captured = capsys.readouterr()
+
+        assert(re.match(expected, captured.err))
+
+    @pytest.mark.dependency(depends=['setup'])
     def test_verbose(self, capsys):
         msg = 'print it'
         end = '\n'
@@ -105,7 +120,7 @@ class TestMessaging:
 
         assert_that(captured.out).is_equal_to(expected)
 
-    @pytest.mark.dependency(name='default', depends=['setup'])
+    @pytest.mark.dependency(depends=['setup'])
     def test_verbose_end(self, capsys):
         msg = 'print this'
         end = '.'
@@ -116,7 +131,7 @@ class TestMessaging:
 
         assert_that(captured.out).is_equal_to(expected)
 
-    @pytest.mark.dependency(name='default', depends=['setup'])
+    @pytest.mark.dependency(depends=['setup'])
     def test_verbose_prefix_ignored(self, capsys):
         prefix = 'inline'
         msg = 'print this'
