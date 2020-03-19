@@ -201,9 +201,9 @@ Logging should be intentional by design. Blindly logging to the root logger
 negates this. Lastly, *umsg* defaults to the :py:const:`logging.INFO` level. This
 is for two reasons. First, libraries don't usually emit a lot of general messages,
 and by isolating to the module, the developer is already required to deliberately
-enabling library logs, so they most likely will override with their own desired
-level. Second, *umsg* does support generic application logging, which more often
-desires general information messages by default. If the application so requires,
+enabling library logs, so they should override with their own desired level.
+Second, *umsg* does support generic application logging, which more often
+requires general information messages by default. If the application so requires,
 :py:const:`logging.DEBUG` can be easily enabled, though we shouldn't assume this
 is required by default for all applications.
 
@@ -214,6 +214,7 @@ Enabling the :py:class:`~logging.StreamHandler`, if desired, is trivial:
   import logging
   import umsg
 
+  umsg.init()
   umsg.get_attr('logger').setHandler(logging.StreamHandler())
   umsg.log('Hello World')
 
