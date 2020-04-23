@@ -56,7 +56,7 @@ DEFAULT_EXC_INFO = False
 DEFAULT_STACK_INFO = False
 """bool: Default message stack_info setting."""
 
-DEFAULT_PROPAGATE = False
+DEFAULT_PROPAGATE = True
 """bool: Default log propagation."""
 
 DEFAULT_VERBOSE = False
@@ -178,15 +178,19 @@ def init(**kwargs):
     if get_attr('logger') is not None:
         return get_attr('logger')
 
-    if 'logger_name' not in kwargs:
+    if kwargs.get('logger'):
+        logger = kwargs['logger']
+        kwargs['logger_name'] = None
+        del kwargs['logger']
+    elif not kwargs.get('logger_name'):
         kwargs['logger_name'] = get_attr('logger_name') or module
+        logger = logging.getLogger(kwargs['logger_name'])
 
     # set any profile attributes received
     for k, v in kwargs.items():
         set_attr(k, v)
 
     formatter = logging.Formatter(get_attr('msg_format'), get_attr('date_format'))
-    logger = logging.getLogger(get_attr('logger_name'))
     logger.setLevel(get_attr('level'))
     logger.addHandler(logging.NullHandler())
     logger.propagate = get_attr('propagate')
