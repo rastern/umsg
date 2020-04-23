@@ -27,7 +27,12 @@ class LoggingMixin:
             except TypeError as e:
                 pass
 
-        self._umsg_logger = logger or umsg.get_attr('logger')
+        if logger:
+            umsg.set_attr('logger', logger)
+        else:
+            umsg.init()
+
+        self._umsg_logger = umsg.get_attr('logger')
         self._umsg_log_prefix = prefix or umsg.get_attr('msg_prefix')
 
     def _msg(self, *args, **kwargs):
