@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
 import inspect
+import logging
 
 
 
@@ -24,7 +25,24 @@ def _caller(root=False):
         except IndexError:
             break
 
-    #if root:
-    #    return m.__name__.split('.')[0]
-
     return m.__name__
+
+
+def log_level(level):
+    "Converts a string or integer level to proper logging.LEVEL"
+    try:
+        level = level.lower()
+    except AttributeError:
+        if level not in (10, 20, 30, 40, 50):
+            return logging.INFO
+
+    if level in ('crit', 'critical', logging.CRITICAL):
+        return logging.CRITICAL
+    elif level in ('error', logging.ERROR):
+        return logging.ERROR
+    elif level in ('warn', 'warning', logging.WARNING):
+        return logging.WARNING
+    elif level in ('debug', logging.DEBUG):
+        return logging.DEBUG
+    else:
+        return logging.INFO

@@ -3,7 +3,7 @@
 
 __title__ = 'umsg'
 __description__ = '_msg Library Logging'
-__version__ = '1.0.2.dev4'
+__version__ = '1.0.3.dev1'
 __build__ = ''
 __author__ = 'R.A. Stern'
 __author_email__ = 'oss@rastern.me'
