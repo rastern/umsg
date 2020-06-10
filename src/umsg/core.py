@@ -5,7 +5,7 @@ import logging
 import logging.handlers
 import sys
 
-from .util import _caller
+from .util import _caller, log_level
 
 this = sys.modules[__name__]
 
@@ -182,8 +182,10 @@ def init(**kwargs):
         logger = kwargs['logger']
         kwargs['logger_name'] = None
         del kwargs['logger']
-    elif not kwargs.get('logger_name'):
-        kwargs['logger_name'] = get_attr('logger_name') or module
+    else:
+        if not kwargs.get('logger_name'):
+            kwargs['logger_name'] = get_attr('logger_name') or module
+
         logger = logging.getLogger(kwargs['logger_name'])
 
     # set any profile attributes received
@@ -247,8 +249,7 @@ def _msg(msg, level=None, prefix=None, logger=None, exc_info=False,
     try:
         level = level.lower()
     except AttributeError:
-        if level not in (10, 20, 30, 40, 50):
-            level = 'info'
+        pass
 
     logger = logger if logger is not None else get_attr('logger')
     prefix = prefix if prefix is not None else get_attr('msg_prefix')
@@ -258,16 +259,8 @@ def _msg(msg, level=None, prefix=None, logger=None, exc_info=False,
     if level == 'verbose' or get_attr('verbose'):
         print(msg, end=end, flush=True)
     else:
+        level = log_level(level)
         if prefix:
             msg = get_attr('msg_prefix_format').format(prefix=prefix) + msg
 
-        if level in ('crit', 'critical', logging.CRITICAL):
-            logger.critical(msg, exc_info=exc_info, stack_info=stack_info, extra=extra)
-        elif level in ('error', logging.ERROR):
-            logger.error(msg, exc_info=exc_info, stack_info=stack_info, extra=extra)
-        elif level in ('warn', 'warning', logging.WARNING):
-            logger.warning(msg, exc_info=exc_info, stack_info=stack_info, extra=extra)
-        elif level in ('debug', logging.DEBUG):
-            logger.debug(msg, exc_info=exc_info, stack_info=stack_info, extra=extra)
-        else:
-            logger.info(msg, exc_info=exc_info, stack_info=stack_info, extra=extra)
+        logger.log(level, msg, exc_info=exc_info, stack_info=stack_info, extra=extra)
