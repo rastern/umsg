@@ -215,7 +215,7 @@ Enabling the :py:class:`~logging.StreamHandler`, if desired, is trivial:
   import umsg
 
   umsg.init()
-  umsg.get_attr('logger').setHandler(logging.StreamHandler())
+  umsg.add_handler(logging.StreamHandler())
   umsg.log('Hello World')
 
 Unlike the :py:func:`~logging.basicConfig` defaults, which are set at the :py:const:`logging.WARNING`

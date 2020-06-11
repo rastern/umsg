@@ -39,7 +39,7 @@ Basic Module / Script Logging Too
   import logging
   import umsg
 
-  umsg.get_attr('logger').setHandler(logging.StreamHandler())
+  umsg.add_handler(logging.StreamHandler())
   umsg.log('Good here')
 
 

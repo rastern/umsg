@@ -128,15 +128,23 @@ def set_attr(name, value):
 def add_handler(handler, **kwargs):
     """Adds a new handler to the module / package logger.
 
-    Adds the given handler, with the specified keyword arguments, to the logger,
-    using the default formatter.
+    Adds the given handler to the logger using the default formatter. If a custom
+    formatter is required for this handler, it should be added using the native
+    :py:meth:`~logging.addHandler` method as follows:
+        get_attr('logger').addHandler(handler)
 
-    handler (:py:class:`~logging.handler`): Handler to add.
+    handler (:py:class:`~logging.handler`): Handler to add. If an instance is
+        provided, ``**kwargs`` is ignored. If a class reference is provided,
+        ``**kwargs`` are passed to initializer.
     **kwargs (dict, optional): Dictionary of keyword arguments to the handler.
     """
     module = _init_profile()
 
-    _handler = handler(**kwargs)
+    if isinstance(handler, logging.Handler):
+        _handler = handler
+    else:
+        _handler = handler(**kwargs)
+
     _handler.setLevel(get_attr('level'))
     _handler.setFormatter(get_attr('formatter'))
 
@@ -190,7 +198,10 @@ def init(**kwargs):
 
     # set any profile attributes received
     for k, v in kwargs.items():
-        set_attr(k, v)
+        if k in ('mode', 'level'):
+            set_attr(k, log_level(v))
+        else:
+            set_attr(k, v)
 
     formatter = logging.Formatter(get_attr('msg_format'), get_attr('date_format'))
     logger.setLevel(get_attr('level'))
