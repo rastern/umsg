@@ -36,7 +36,7 @@ Requirements
 tested against the following interpreters
 
 - CPython_ 3.5.7
-- CPython_ 3.6.8
+- CPython_ 3.6.10
 - CPython_ 3.7.6
 - CPython_ 3.8.0
 - CPython_ 3.9.0a3+ (dev)
@@ -53,16 +53,15 @@ Usage
 
   umsg.log('hello logging')
 
-However, you may find it more useful to set a handler other than the default
-:py:class:`~logging.NullHandler`.
+However, because it is intended for libraries, you may find it more useful to
+set a handler other than the default :py:class:`~logging.NullHandler`.
 
 .. code-block:: python
 
   import logging
   import umsg
 
-  umsg.get_attr('logger').setHandler(logging.StreamHandler())
-
+  umsg.add_handler(logging.StreamHandler())
   umsg.log('send me to stdout!')
 
 
